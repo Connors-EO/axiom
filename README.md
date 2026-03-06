@@ -52,3 +52,4 @@ axiom/
 | pytest + pytest-cov | Testing and 100% coverage enforcement |
 | mypy (strict) | Static type checking |
 | ruff | Linting and formatting |
+
