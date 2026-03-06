@@ -1,6 +1,11 @@
-node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+htmlcov/
+.coverage
 dist/
-coverage/
+*.egg-info/
+.venv/
 .env
-*.js.map
 .envrc
