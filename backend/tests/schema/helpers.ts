@@ -46,3 +46,23 @@ export async function rlsEnabled(tableName: string): Promise<boolean> {
   );
   return result.rows[0]?.relrowsecurity === true;
 }
+
+export async function queryAsTenant<T extends object>(
+  sql: string,
+  tenant: string,
+  params?: unknown[]
+): Promise<T[]> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(`SET LOCAL app.tenant_id = '${tenant}'`);
+    const result = await client.query(sql, params ?? []);
+    await client.query('COMMIT');
+    return result.rows as T[];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
