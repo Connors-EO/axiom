@@ -1,8 +1,5 @@
 import os
 
-import psycopg2
-import pytest
-
 from backend.src.db.client import get_connection
 
 

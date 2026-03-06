@@ -774,6 +774,18 @@ files = [
 ]
 
 [[package]]
+name = "types-psycopg2"
+version = "2.9.21.20260223"
+description = "Typing stubs for psycopg2"
+optional = false
+python-versions = ">=3.10"
+groups = ["dev"]
+files = [
+    {file = "types_psycopg2-2.9.21.20260223-py3-none-any.whl", hash = "sha256:c6228ade72d813b0624f4c03feeb89471950ac27cd0506b5debed6f053086bc8"},
+    {file = "types_psycopg2-2.9.21.20260223.tar.gz", hash = "sha256:78ed70de2e56bc6b5c26c8c1da8e9af54e49fdc3c94d1504609f3519e2b84f02"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -807,4 +819,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "cf54fae4806b71e474730687db3a9810f37a47debb44ae6a13456d7303010d7e"
+content-hash = "00ea87ad4af47382ee80bd26a5ef58d44361b263587cffecd7df3c6b0b0af0dc"

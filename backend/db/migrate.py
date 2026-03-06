@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 from backend.src.db.client import get_connection
