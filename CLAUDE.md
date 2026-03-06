@@ -43,9 +43,8 @@ feature/{issue-number}-{short-slug}
 ```
 
 Examples:
-- `feature/5-repo-skeleton`
-- `feature/6-db-schema`
-- `feature/7-seed-data`
+- `feature/12-python-migration`
+- `feature/16-github-adapter-cache`
 
 Always branch from `main`. Never branch from another feature branch.
 
@@ -56,14 +55,16 @@ Always branch from `main`. Never branch from another feature branch.
 These are non-negotiable:
 
 1. **Red first** — write the test, run it, confirm it fails before writing implementation code
-2. **100% coverage** — `coverageThreshold` is set to 100% for all metrics on `backend/src/**`. It never goes down.
+2. **100% coverage** — `--cov-fail-under=100` is enforced in `pyproject.toml` for all code in `backend/src/`. It never goes down.
 3. **No exceptions** — if a line of code in `backend/src/` exists, it must be exercised by a test
 4. **Test files live in `backend/tests/`** mirroring the structure of `backend/src/`
+5. **Fixtures live in `conftest.py`** at the appropriate test directory level
 
 Running tests:
 ```bash
-npm test                # run all tests, no coverage report
-npm run test:coverage   # run all tests with coverage enforcement
+poetry run pytest                  # run all tests with coverage enforcement
+poetry run pytest --no-cov         # run tests without coverage (for quick iteration)
+poetry run pytest -v               # verbose output with individual test names
 ```
 
 ---
@@ -81,11 +82,9 @@ Allowed types: `feat`, `fix`, `docs`, `knowledge`, `infra`, `chore`, `refactor`
 Examples:
 ```
 feat(schema): add complete postgres schema with RLS — closes #6
-feat(repo): initialize axiom repository skeleton — closes #5
-docs(claude): add ways of working document
+feat(db): rewrite database client in Python — closes #13
+docs(claude): update ways of working for Python stack
 ```
-
-Commit messages are enforced by `commitlint` on this repo.
 
 ---
 
@@ -103,10 +102,10 @@ Commit messages are enforced by `commitlint` on this repo.
 
 ## Environment Assumptions
 
-Local development uses `docker-compose`:
+Local development uses `docker compose`:
 
 ```bash
-docker compose up -d    # start postgres:16 on localhost:5432
+docker compose up -d    # start postgres:16 on localhost:5433
 ```
 
 Database: `axiom_dev`, user: `axiom`, password: `axiom`
@@ -115,7 +114,7 @@ Environment variables (never committed, stored in `.env`):
 
 ```
 PGHOST=localhost
-PGPORT=5432
+PGPORT=5433
 PGDATABASE=axiom_dev
 PGUSER=axiom
 PGPASSWORD=axiom
@@ -125,8 +124,8 @@ PGPASSWORD=axiom
 
 Database scripts:
 ```bash
-npm run db:migrate   # apply pending migrations
-npm run db:seed      # load seed data (idempotent)
+poetry run python -m backend.db.migrate   # apply pending migrations
+poetry run python -m backend.db.seed      # load seed data (idempotent)
 ```
 
 ---
@@ -136,8 +135,10 @@ npm run db:seed      # load seed data (idempotent)
 A story is done when ALL of the following are true:
 
 - [ ] All acceptance criteria in the GitHub issue are met
-- [ ] `npm test` passes with zero failures
-- [ ] `npm run test:coverage` passes at 100% on all metrics
+- [ ] `poetry run pytest` passes with zero failures
+- [ ] Coverage is at 100% on all metrics for `backend/src/`
+- [ ] `poetry run mypy backend/src` passes with zero errors
+- [ ] `poetry run ruff check backend/` passes with zero errors
 - [ ] Branch is pushed to `origin` and a PR is open (or ready to open)
 - [ ] No merge has been performed
 - [ ] Commit message references the closing issue number
