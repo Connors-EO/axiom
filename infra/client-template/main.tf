@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 module "networking" {
-  source = "git::ssh://git@github-everops/Connors-EO/everops-infra.git//modules/networking?ref=infra-v0.3.0"
+  source = "git::https://github.com/Connors-EO/everops-infra.git//modules/networking?ref=infra-v0.3.0"
 
   project           = var.project
   environment       = var.environment
@@ -22,7 +22,7 @@ module "networking" {
 }
 
 module "iam" {
-  source = "git::ssh://git@github-everops/Connors-EO/everops-infra.git//modules/iam?ref=infra-v0.3.0"
+  source = "git::https://github.com/Connors-EO/everops-infra.git//modules/iam?ref=infra-v0.3.0"
 
   project        = var.project
   environment    = var.environment
@@ -54,7 +54,7 @@ module "iam" {
 }
 
 module "compute" {
-  source = "git::ssh://git@github-everops/Connors-EO/everops-infra.git//modules/compute?ref=infra-v0.3.0"
+  source = "git::https://github.com/Connors-EO/everops-infra.git//modules/compute?ref=infra-v0.3.0"
 
   project                  = var.project
   environment              = var.environment

@@ -23,6 +23,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.7"
+      - name: Configure git for private modules
+        run: git config --global url."https://oauth2:${{ secrets.GH_PAT_INFRA }}@github.com".insteadOf "https://github.com"
       - name: Terraform Apply — Staging
         run: |
           cd infra/staging
