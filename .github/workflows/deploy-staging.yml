@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-role
+          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-apply-role
           aws-region: us-east-1
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-role
+          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-apply-role
           aws-region: us-east-1
       - uses: actions/setup-python@v5
         with:
