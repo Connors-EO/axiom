@@ -10,3 +10,10 @@ dist/
 .venv/
 .env
 .envrc
+
+# Terraform — local variable files may contain sensitive values; never commit
+*.tfvars
+!*.tfvars.example
+
+# Terraform provider cache and downloaded modules — never commit
+.terraform/
