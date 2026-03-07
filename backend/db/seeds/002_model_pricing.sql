@@ -20,7 +20,7 @@ VALUES
 
 -- Claude Sonnet — primary reasoning model
 (
-  'anthropic.claude-sonnet-4-6',
+  'us.anthropic.claude-sonnet-4-6',
   'Claude Sonnet',
   0.003000,   -- $3.00 per 1M input tokens (placeholder)
   0.015000,   -- $15.00 per 1M output tokens (placeholder)
