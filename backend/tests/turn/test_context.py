@@ -3,7 +3,6 @@ from typing import Any
 from uuid import UUID
 
 import psycopg2.extensions
-import pytest
 
 from backend.src.adapters.exceptions import AdapterError
 from backend.src.adapters.github import AdapterResult

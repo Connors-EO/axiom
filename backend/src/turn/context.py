@@ -112,7 +112,7 @@ def _load_conversation_history(
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT role, content, phase
+            SELECT role, content
             FROM messages
             WHERE engagement_id = %s
               AND phase = %s
@@ -122,7 +122,7 @@ def _load_conversation_history(
         )
         rows = cur.fetchall()
 
-    return [{"role": row[0], "content": row[1], "phase": row[2]} for row in rows]
+    return [{"role": row[0], "content": row[1]} for row in rows]
 
 
 def _format_phase_summaries(phase_context: dict[str, object]) -> str:
