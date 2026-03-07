@@ -1,0 +1,58 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    name: Terraform Apply — Staging
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-role
+          aws-region: us-east-1
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.7"
+      - name: Terraform Apply — Staging
+        run: |
+          cd infra/staging
+          terraform init
+          terraform apply -auto-approve
+
+  deploy:
+    name: Deploy Lambda Code
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: terraform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::289921858159:role/axiom-github-actions-role
+          aws-region: us-east-1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Package and deploy Lambda
+        run: ./scripts/deploy-staging.sh
+      - name: Run smoke tests
+        env:
+          AXIOM_STAGING_URL: ${{ secrets.AXIOM_STAGING_URL }}
+        run: |
+          poetry install --with dev
+          poetry run pytest backend/tests/smoke/ -m smoke -v
+      - name: Notify on failure
+        if: failure()
+        run: echo "Deploy or smoke tests failed — investigate staging"
