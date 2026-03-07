@@ -23,13 +23,17 @@ pytest-asyncio = "^0.23"
 mypy = "^1.9"
 ruff = "^0.4"
 types-psycopg2 = "^2.9"
+boto3-stubs = {extras = ["bedrock-runtime"], version = "^1.42.63"}
 
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=backend/src --cov-report=term-missing --cov-fail-under=100"
+addopts = "--cov=backend/src --cov-report=term-missing --cov-fail-under=100 --ignore=backend/tests/integration"
+markers = [
+    "integration: marks tests as integration tests (real AWS + DB)",
+]
 
 [tool.coverage.run]
 source = ["backend/src"]
