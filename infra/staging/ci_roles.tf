@@ -83,9 +83,54 @@ resource "aws_iam_role_policy" "github_actions_plan" {
         Resource = "*"
       },
       {
-        Sid      = "LambdaRead"
+        Sid    = "LambdaRead"
+        Effect = "Allow"
+        Action = [
+          "lambda:GetFunction", "lambda:ListFunctions", "lambda:GetFunctionConfiguration",
+          "lambda:GetPolicy", "lambda:ListTags", "lambda:ListVersionsByFunction",
+          "lambda:GetFunctionCodeSigningConfig"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid      = "APIGatewayRead"
         Effect   = "Allow"
-        Action   = ["lambda:GetFunction", "lambda:ListFunctions", "lambda:GetFunctionConfiguration", "lambda:GetPolicy", "lambda:ListTags"]
+        Action   = ["apigateway:GET"]
+        Resource = "*"
+      },
+      {
+        Sid    = "CloudFrontRead"
+        Effect = "Allow"
+        Action = ["cloudfront:Get*", "cloudfront:List*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "WAFRead"
+        Effect = "Allow"
+        Action = ["wafv2:Get*", "wafv2:List*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "SecretsManagerRead"
+        Effect = "Allow"
+        Action = ["secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue", "secretsmanager:ListSecrets"]
+        Resource = "arn:aws:secretsmanager:us-east-1:${var.aws_account_id}:secret:axiom-*"
+      },
+      {
+        Sid    = "S3BucketRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketVersioning", "s3:GetEncryptionConfiguration", "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketPolicy", "s3:GetBucketTagging", "s3:GetBucketLocation",
+          "s3:GetBucketCORS", "s3:GetBucketWebsite", "s3:GetBucketLogging",
+          "s3:GetBucketObjectLockConfiguration", "s3:GetBucketAcl"
+        ]
+        Resource = "arn:aws:s3:::axiom-*"
+      },
+      {
+        Sid    = "CloudWatchLogsRead"
+        Effect = "Allow"
+        Action = ["logs:DescribeLogGroups", "logs:ListTagsForResource", "logs:ListTagsLogGroup"]
         Resource = "*"
       },
       {
