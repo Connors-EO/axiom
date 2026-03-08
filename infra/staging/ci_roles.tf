@@ -113,7 +113,7 @@ resource "aws_iam_role_policy" "github_actions_plan" {
       {
         Sid    = "SecretsManagerRead"
         Effect = "Allow"
-        Action = ["secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue", "secretsmanager:ListSecrets"]
+        Action = ["secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue", "secretsmanager:ListSecrets", "secretsmanager:GetResourcePolicy"]
         Resource = "arn:aws:secretsmanager:us-east-1:${var.aws_account_id}:secret:axiom-*"
       },
       {
