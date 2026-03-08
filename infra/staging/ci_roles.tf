@@ -155,8 +155,11 @@ resource "aws_iam_role" "github_actions_apply" {
       Principal = { Federated = local.oidc_provider_arn }
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
-        StringLike   = { "token.actions.githubusercontent.com:sub" = "repo:Connors-EO/axiom:ref:refs/heads/main" }
-        StringEquals = { "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com" }
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+          # Jobs with `environment: staging` use environment-scoped sub claim
+          "token.actions.githubusercontent.com:sub" = "repo:Connors-EO/axiom:environment:staging"
+        }
       }
     }]
   })
@@ -191,7 +194,9 @@ resource "aws_iam_role_policy" "github_actions_apply" {
           "lambda:GetPolicy",
           "lambda:TagResource",
           "lambda:UntagResource",
-          "lambda:ListTags"
+          "lambda:ListTags",
+          "lambda:ListVersionsByFunction",
+          "lambda:GetFunctionCodeSigningConfig"
         ]
         Resource = "arn:aws:lambda:us-east-1:${var.aws_account_id}:function:axiom-staging-*"
       },
@@ -261,6 +266,94 @@ resource "aws_iam_role_policy" "github_actions_apply" {
             "iam:PermissionsBoundary" = local.boundary_policy_arn
           }
         }
+      },
+      {
+        Sid      = "APIGatewayManage"
+        Effect   = "Allow"
+        Action   = ["apigateway:*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "CloudFrontManage"
+        Effect = "Allow"
+        Action = ["cloudfront:*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "WAFManage"
+        Effect = "Allow"
+        Action = ["wafv2:*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "SecretsManagerManage"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:GetResourcePolicy",
+          "secretsmanager:TagResource",
+          "secretsmanager:UntagResource"
+        ]
+        Resource = "arn:aws:secretsmanager:us-east-1:${var.aws_account_id}:secret:axiom-*"
+      },
+      {
+        Sid    = "S3BucketManage"
+        Effect = "Allow"
+        Action = [
+          "s3:CreateBucket",
+          "s3:DeleteBucket",
+          "s3:GetBucketVersioning",
+          "s3:PutBucketVersioning",
+          "s3:GetEncryptionConfiguration",
+          "s3:PutEncryptionConfiguration",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:PutBucketPublicAccessBlock",
+          "s3:GetBucketPolicy",
+          "s3:PutBucketPolicy",
+          "s3:DeleteBucketPolicy",
+          "s3:GetBucketTagging",
+          "s3:PutBucketTagging",
+          "s3:GetBucketLocation",
+          "s3:GetBucketCORS",
+          "s3:PutBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketLogging",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetBucketAcl",
+          "s3:ListBucket"
+        ]
+        Resource = "arn:aws:s3:::axiom-*"
+      },
+      {
+        Sid    = "CloudWatchLogsManage"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:DeleteLogGroup",
+          "logs:DescribeLogGroups",
+          "logs:ListTagsForResource",
+          "logs:ListTagsLogGroup",
+          "logs:PutRetentionPolicy",
+          "logs:DeleteRetentionPolicy",
+          "logs:TagResource",
+          "logs:TagLogGroup",
+          "logs:UntagResource",
+          "logs:UntagLogGroup",
+          "logs:AssociateKmsKey"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid      = "STSIdentity"
+        Effect   = "Allow"
+        Action   = ["sts:GetCallerIdentity"]
+        Resource = "*"
       },
       {
         Sid    = "DenyBoundaryPolicyModification"
