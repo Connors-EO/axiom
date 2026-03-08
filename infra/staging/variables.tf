@@ -18,11 +18,6 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "allowed_ip_cidrs" {
-  description = "IP CIDRs allowed through WAF (office, home, CI)"
-  type        = list(string)
-}
-
 variable "db_secret_arn" {
   description = "ARN of the Secrets Manager secret for the database password"
   type        = string

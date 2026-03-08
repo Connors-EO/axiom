@@ -55,7 +55,7 @@ module "iam" {
 }
 
 module "compute" {
-  source = "git::https://github.com/Connors-EO/everops-infra.git//modules/compute?ref=infra-v0.3.0"
+  source = "git::https://github.com/Connors-EO/everops-infra.git//modules/compute?ref=infra-v0.4.0"
 
   project                  = var.project
   environment              = var.environment
@@ -64,8 +64,9 @@ module "compute" {
   vpc_id                   = module.networking.vpc_id
   private_subnet_ids       = module.networking.private_subnet_ids
   lambda_security_group_id = module.networking.lambda_security_group_id
-  jwt_auth_enabled         = false
-  allowed_ip_cidrs         = var.allowed_ip_cidrs
+
+  origin_verify_secret_value = random_password.origin_verify.result
+  lambda_authorizer_arn      = aws_lambda_function.origin_authorizer.arn
 
   function_configs = {
     "axiom-chat" = {
