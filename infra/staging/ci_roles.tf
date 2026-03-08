@@ -169,6 +169,12 @@ resource "aws_iam_role" "github_actions_apply" {
     Environment = "staging"
     ManagedBy   = "terraform"
   }
+
+  # The apply role's own trust policy is protected by DenyOwnTrustModification.
+  # Trust policy changes must be applied out-of-band via aws iam update-assume-role-policy.
+  lifecycle {
+    ignore_changes = [assume_role_policy]
+  }
 }
 
 resource "aws_iam_role_policy" "github_actions_apply" {
@@ -303,31 +309,9 @@ resource "aws_iam_role_policy" "github_actions_apply" {
         Resource = "arn:aws:secretsmanager:us-east-1:${var.aws_account_id}:secret:axiom-*"
       },
       {
-        Sid    = "S3BucketManage"
-        Effect = "Allow"
-        Action = [
-          "s3:CreateBucket",
-          "s3:DeleteBucket",
-          "s3:GetBucketVersioning",
-          "s3:PutBucketVersioning",
-          "s3:GetEncryptionConfiguration",
-          "s3:PutEncryptionConfiguration",
-          "s3:GetBucketPublicAccessBlock",
-          "s3:PutBucketPublicAccessBlock",
-          "s3:GetBucketPolicy",
-          "s3:PutBucketPolicy",
-          "s3:DeleteBucketPolicy",
-          "s3:GetBucketTagging",
-          "s3:PutBucketTagging",
-          "s3:GetBucketLocation",
-          "s3:GetBucketCORS",
-          "s3:PutBucketCORS",
-          "s3:GetBucketWebsite",
-          "s3:GetBucketLogging",
-          "s3:GetBucketObjectLockConfiguration",
-          "s3:GetBucketAcl",
-          "s3:ListBucket"
-        ]
+        Sid      = "S3BucketManage"
+        Effect   = "Allow"
+        Action   = ["s3:*"]
         Resource = "arn:aws:s3:::axiom-*"
       },
       {
