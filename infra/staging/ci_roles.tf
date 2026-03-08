@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "github_actions_plan" {
         Action = ["kms:Decrypt"]
         Resource = "arn:aws:kms:us-east-1:${var.aws_account_id}:key/*"
         Condition = {
-          StringEquals = { "kms:RequestAlias" = "alias/axiom-tfstate" }
+          "ForAnyValue:StringEquals" = { "kms:ResourceAliases" = "alias/axiom-tfstate" }
         }
       },
       {
@@ -171,7 +171,7 @@ resource "aws_iam_role_policy" "github_actions_apply" {
         Action = ["kms:Decrypt", "kms:GenerateDataKey"]
         Resource = "arn:aws:kms:us-east-1:${var.aws_account_id}:key/*"
         Condition = {
-          StringEquals = { "kms:RequestAlias" = "alias/axiom-tfstate" }
+          "ForAnyValue:StringEquals" = { "kms:ResourceAliases" = "alias/axiom-tfstate" }
         }
       },
       {
