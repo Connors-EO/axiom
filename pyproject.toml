@@ -30,9 +30,10 @@ testpaths = ["backend/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=backend/src --cov-report=term-missing --cov-fail-under=100 --ignore=backend/tests/integration"
+addopts = "--cov=backend/src --cov-report=term-missing --cov-fail-under=100 --ignore=backend/tests/integration --ignore=backend/tests/smoke"
 markers = [
     "integration: marks tests as integration tests (real AWS + DB)",
+    "smoke: marks tests as end-to-end smoke tests against live staging",
 ]
 
 [tool.coverage.run]
